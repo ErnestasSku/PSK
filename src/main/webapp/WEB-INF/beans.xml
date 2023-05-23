@@ -9,4 +9,10 @@
     <interceptors>
         <class>interceptors.MethodLogger</class>
     </interceptors>
+    <alternatives>
+        <class>usecases.ComplexJobAssign</class>
+    </alternatives>
+    <decorators>
+        <class>utilities.DevLogger</class>
+    </decorators>
 </beans>

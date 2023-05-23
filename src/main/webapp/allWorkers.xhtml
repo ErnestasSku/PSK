@@ -70,5 +70,19 @@
 
         <h:commandButton value="Assign" action="#{workerInfoCDI.assignTools}" />
     </h:form>
+
+<!--    -->
+
+    <br />
+    <br />
+
+    <h:form>
+        Order id: <h:inputText value="#{workerInfoCDI.workId}"/> <br/>
+        Worker id:  <h:inputText value="#{workerInfoCDI.input}"/>
+
+
+        <h:commandButton value="Assign" action="#{workerInfoCDI.assignOrders}" />
+    </h:form>
+
 </h:body>
 </html>

@@ -1,10 +1,12 @@
 package usecases;
 
 import entities.Equipment;
+import entities.WorkOrder;
 import entities.Worker;
 import lombok.Getter;
 import lombok.Setter;
 import persistence.EquipmentDAO;
+import persistence.WorkOrderDAO;
 import persistence.WorkerDAO;
 
 import javax.annotation.PostConstruct;
@@ -12,8 +14,10 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.criteria.Order;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 @Named
 @RequestScoped
@@ -25,14 +29,23 @@ public class WorkerInfoCDI {
     @Inject
     private EquipmentDAO equipmentDAO;
 
+    @Inject
+    private WorkOrderDAO workOrderDAO;
+
     @Getter
     private Worker worker;
+
+    @Inject
+    private JobAssigner jobAssigner;
 
     @Getter @Setter
     private String input;
 
     @Getter @Setter
     private String equipmentId;
+
+    @Getter @Setter
+    private String workId;
 
     public void getSpecificWorker() {
         try {
@@ -64,9 +77,39 @@ public class WorkerInfoCDI {
         }
     }
 
-    @Transactional
-    public void assignOrders(Integer orderId) {
+//    @Transactional
+//    public void assignOrders() {
+//        try {
+//            Integer orderId = Integer.parseInt(workId);
+//            Integer workderId = Integer.parseInt(input);
+//
+//            System.out.println(String.format("DEBUG: Order: %s worker: %s"
+//            ,orderId, workderId));
+//
+//
+//            return CompletableFuture.supplyAsync(() -> jobAssigner.assignJob(orderId, workderId));
+////            jobAssigner.assignJob(orderId, workderId);
+//
+//        } catch (Exception ex) {
+//            System.out.println("Error: " + ex.getMessage());
+//        }
+//
+//    }
 
+    @Transactional
+    public void assignOrders() {
+        try {
+            Integer orderId = Integer.parseInt(workId);
+            Integer workerId = Integer.parseInt(input);
+
+            System.out.println(String.format("DEBUG: Order: %s worker: %s", orderId, workerId));
+
+            CompletableFuture.runAsync(() -> jobAssigner.assignJob(orderId, workerId))
+                    .thenAcceptAsync(result -> {
+                    });
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 
 }
